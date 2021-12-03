@@ -13,7 +13,7 @@ contract('PolygonJupiter', function (accounts) {
     assert.equal(owner, contractOwner, "Owner is not correct");
   });
 
-  it("depositing 1 MATIC from account [0] for 10 days", async () => {
+  it("depositing 1 MATIC from accounts[0] for 10 days", async () => {
     const account = accounts[0];
     const amount = web3.utils.toWei("1", "ether");
     const days = 10;
@@ -22,8 +22,17 @@ contract('PolygonJupiter', function (accounts) {
     assert.equal(userInfo.total_invested, amount, "Deposited amount is not correct");
   });
 
-  it("depositing 1 MATIC from account [1] for 34 days", async () => {
-    const account = accounts[1];
+  it("depositing 1 MATIC from accounts[9] for 23 days", async () => {
+    const account = accounts[9];
+    const amount = web3.utils.toWei("1", "ether");
+    const days = 23;
+    await this.polygonJupiterInstance.deposit(days, this.referral, { from: account, value: amount });
+    const userInfo = await this.polygonJupiterInstance.userInfo(account);
+    assert.equal(userInfo.total_invested, amount, "Deposited amount is not correct");
+  });
+
+  it("depositing 1 MATIC from accounts[2] for 34 days", async () => {
+    const account = accounts[2];
     const amount = web3.utils.toWei("1", "ether");
     const days = 34;
     await this.polygonJupiterInstance.deposit(days, this.referral, { from: account, value: amount });
@@ -31,30 +40,41 @@ contract('PolygonJupiter', function (accounts) {
     assert.equal(userInfo.total_invested, amount, "Deposited amount is not correct");
   });
 
-  it("depositing 1 MATIC from account [2] for 9 days reverted", async () => {
+  it("depositing 1 MATIC from accounts[2] for 9 days reverted", async () => {
     const account = accounts[1];
     const amount = web3.utils.toWei("1", "ether");
     const days = 9;
     await truffleAssert.reverts(this.polygonJupiterInstance.deposit(days, this.referral, { from: account, value: amount }), "Tarif not found");
   });
 
-  it("depositing 1 MATIC from account [3] for 35 days reverted", async () => {
+  it("depositing 1 MATIC from accounts[3] for 35 days reverted", async () => {
     const account = accounts[1];
     const amount = web3.utils.toWei("1", "ether");
     const days = 35;
     await truffleAssert.reverts(this.polygonJupiterInstance.deposit(days, this.referral, { from: account, value: amount }), "Tarif not found");
   });
 
-  it("depositing 0.99 MATIC from account [1] for 10 days reverted", async () => {
+  it("depositing 0.99 MATIC from accounts[1] for 10 days reverted", async () => {
     const account = accounts[1];
     const amount = web3.utils.toWei("0.99", "ether");
     const days = 10;
     await truffleAssert.reverts(this.polygonJupiterInstance.deposit(days, this.referral, { from: account, value: amount }), "Minimum deposit amount is 1 MATIC");
   });
 
-  it("deposit details verified for accounts[1]", async () => {
-    const depositInfo = await this.polygonJupiterInstance.getDepositInfo(0, { from: accounts[1] });
+  it("deposit details verified for accounts[2]", async () => {
+    const depositInfo = await this.polygonJupiterInstance.getDepositInfo(0, { from: accounts[2] });
     assert.equal(depositInfo._tarif, 34, "Tarif is not correct");
     assert.equal(depositInfo._amount, web3.utils.toWei("1", "ether"), "Amount is not correct");
   });
+
+  it("referral for accounts[0] is address(0)", async () => {
+    const investorInfo = await this.polygonJupiterInstance.investors(accounts[0]);
+    assert.equal(investorInfo.referral, "0x0000000000000000000000000000000000000000", "Referral is not correct");
+  });
+
+  it("referral for accounts[2] is accounts[9]", async () => {
+    const investorInfo = await this.polygonJupiterInstance.investors(accounts[2]);
+    assert.equal(investorInfo.referral, this.referral, "Referral is not correct");
+  });
+
 });
