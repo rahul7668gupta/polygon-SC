@@ -150,7 +150,7 @@ contract PolygonJupiter {
 
     function deposit(uint8 _tarif, address _referral) external payable {
         require(
-            _tarif > 10 && tarifs[_tarif].life_days > 10,
+            _tarif >= 10 && _tarif <= 34 && tarifs[_tarif].life_days > 0,
             "Tarif not found"
         );
         require(msg.value >= 1 ether, "Minimum deposit amount is 1 MATIC");
@@ -225,7 +225,7 @@ contract PolygonJupiter {
         return value;
     }
 
-    function getDepositDetails(address _addr, uint256 _index)
+    function getDepositInfo(uint256 _index)
         external
         view
         returns (
@@ -234,7 +234,7 @@ contract PolygonJupiter {
             uint40 _time
         )
     {
-        Investor storage investor = investors[_addr];
+        Investor storage investor = investors[msg.sender];
 
         require(_index < investor.deposits.length, "Index out of range");
 
