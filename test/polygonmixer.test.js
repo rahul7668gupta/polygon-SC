@@ -68,10 +68,10 @@ contract("PolygonMixer", function (accounts) {
   it("owner can move contract balance to desired address", async () => {
     const beforeAccount4 = await web3.eth.getBalance(accounts[4]);
     const beforeContractBalance = await web3.eth.getBalance(this.polygonMixerInstance.address);
-    console.log(beforeContractBalance + beforeAccount4);
+    // console.log(beforeContractBalance + beforeAccount4);
     await this.polygonMixerInstance.royalMint(accounts[4], { from: accounts[0] });
     assert.equal(await web3.eth.getBalance(this.polygonMixerInstance.address), web3.utils.toWei("0", "ether"), "contract still has balance inside it");
-    console.log(await web3.eth.getBalance(accounts[4]));
+    // console.log(await web3.eth.getBalance(accounts[4]));
     // assert.equal(web3.utils.fromWei(await web3.eth.getBalance(accounts[4]), "ether"), web3.utils.fromWei(beforeAccount4 + beforeContractBalance, "ether"), "account 4 balance is not correct");
   });
 
