@@ -26,7 +26,7 @@ struct Investor {
 }
 
 contract PolygonJupiter {
-    address public owner = msg.sender;
+    address public owner;
 
     uint256 public invested;
     uint256 public withdrawn;
@@ -49,6 +49,7 @@ contract PolygonJupiter {
     event Withdraw(address indexed addr, uint256 amount);
 
     constructor() {
+        owner = msg.sender;
         uint16 tarifPercent = 130;
         for (uint8 tarifDays = 10; tarifDays <= 34; tarifDays++) {
             tarifs[tarifDays] = Tarif(tarifDays, tarifPercent);
@@ -72,7 +73,7 @@ contract PolygonJupiter {
         external
         view
         returns (
-            uint256 for_withdraw,
+            uint256 for_withdrawal,
             uint256 total_invested,
             uint256 total_withdrawn,
             uint256 total_referral_bonus,
