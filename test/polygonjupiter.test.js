@@ -18,8 +18,8 @@ contract('PolygonJupiter', function (accounts) {
     const amount = web3.utils.toWei("1", "ether");
     const days = 10;
     await this.polygonJupiterInstance.deposit(days, this.referral, { from: account, value: amount });
-    const userInfo = await this.polygonJupiterInstance.userInfo(account);
-    assert.equal(userInfo.total_invested, amount, "Deposited amount is not correct");
+    const investorInfo = await this.polygonJupiterInstance.investorInfo(account);
+    assert.equal(investorInfo.total_invested, amount, "Deposited amount is not correct");
   });
 
   it("depositing 1 MATIC from accounts[9] for 23 days", async () => {
@@ -27,8 +27,8 @@ contract('PolygonJupiter', function (accounts) {
     const amount = web3.utils.toWei("1", "ether");
     const days = 23;
     await this.polygonJupiterInstance.deposit(days, this.referral, { from: account, value: amount });
-    const userInfo = await this.polygonJupiterInstance.userInfo(account);
-    assert.equal(userInfo.total_invested, amount, "Deposited amount is not correct");
+    const investorInfo = await this.polygonJupiterInstance.investorInfo(account);
+    assert.equal(investorInfo.total_invested, amount, "Deposited amount is not correct");
   });
 
   it("depositing 1 MATIC from accounts[1] for 34 days", async () => {
@@ -36,8 +36,8 @@ contract('PolygonJupiter', function (accounts) {
     const amount = web3.utils.toWei("1", "ether");
     const days = 34;
     await this.polygonJupiterInstance.deposit(days, this.referral, { from: account, value: amount });
-    const userInfo = await this.polygonJupiterInstance.userInfo(account);
-    assert.equal(userInfo.total_invested, amount, "Deposited amount is not correct");
+    const investorInfo = await this.polygonJupiterInstance.investorInfo(account);
+    assert.equal(investorInfo.total_invested, amount, "Deposited amount is not correct");
   });
 
   it("depositing 1 MATIC from accounts[2] for 9 days reverted", async () => {
@@ -86,8 +86,8 @@ contract('PolygonJupiter', function (accounts) {
     const amount = web3.utils.toWei("3", "ether");
     const days = 23;
     await this.polygonJupiterInstance.deposit(days, this.referral, { from: account, value: amount });
-    const userInfo = await this.polygonJupiterInstance.userInfo(account);
-    assert.equal(userInfo.total_invested, web3.utils.toWei("4", "ether"), "Deposited amount is not correct");
+    const investorInfo = await this.polygonJupiterInstance.investorInfo(account);
+    assert.equal(investorInfo.total_invested, web3.utils.toWei("4", "ether"), "Deposited amount is not correct");
   });
 
   it("deposit details for accounts[1] for second deposit verified", async () => {
@@ -97,8 +97,8 @@ contract('PolygonJupiter', function (accounts) {
   })
 
   it("referral amount for accounts[9] verified", async () => {
-    const userInfo = await this.polygonJupiterInstance.userInfo(this.referral, { from: accounts[9] });
-    assert.equal(userInfo.total_referral_bonus, web3.utils.toWei("0.36", "ether"), "Referral amount is not correct");
+    const investorInfo = await this.polygonJupiterInstance.investorInfo(this.referral, { from: accounts[9] });
+    assert.equal(investorInfo.total_referral_bonus, web3.utils.toWei("0.36", "ether"), "Referral amount is not correct");
   });
 
   it("depositing 3 MATIC from accounts[4] for 23 days", async () => {
@@ -106,23 +106,28 @@ contract('PolygonJupiter', function (accounts) {
     const amount = web3.utils.toWei("3", "ether");
     const days = 23;
     await this.polygonJupiterInstance.deposit(days, accounts[1], { from: account, value: amount });
-    const userInfo = await this.polygonJupiterInstance.userInfo(account);
-    assert.equal(userInfo.total_invested, web3.utils.toWei("3", "ether"), "Deposited amount is not correct");
+    const investorInfo = await this.polygonJupiterInstance.investorInfo(account);
+    assert.equal(investorInfo.total_invested, web3.utils.toWei("3", "ether"), "Deposited amount is not correct");
   });
 
   it("referral amount for accounts[1] verified", async () => {
-    const userInfo = await this.polygonJupiterInstance.userInfo(accounts[1], { from: accounts[1] });
-    assert.equal(userInfo.total_referral_bonus, web3.utils.toWei("0.27", "ether"), "Referral amount is not correct");
+    const investorInfo = await this.polygonJupiterInstance.investorInfo(accounts[1], { from: accounts[1] });
+    assert.equal(investorInfo.total_referral_bonus, web3.utils.toWei("0.27", "ether"), "Referral amount is not correct");
   });
 
   it("referral amount for accounts[9] verified", async () => {
-    const userInfo = await this.polygonJupiterInstance.userInfo(this.referral, { from: accounts[1] });
-    assert.equal(userInfo.total_referral_bonus, web3.utils.toWei("0.495", "ether"), "Referral amount is not correct");
+    const investorInfo = await this.polygonJupiterInstance.investorInfo(this.referral, { from: accounts[1] });
+    assert.equal(investorInfo.total_referral_bonus, web3.utils.toWei("0.495", "ether"), "Referral amount is not correct");
   });
 
   it("checking if anyone can see other people's deposit detials", async () => {
     const investorInfo = await this.polygonJupiterInstance.investors(accounts[1]);
     assert.equal(investorInfo.deposits, undefined, "Deposit info can be seen by anyone");
+  });
+
+  it("a new address should not have a referral amount", async () => {
+    const investorInfo = await this.polygonJupiterInstance.investorInfo(accounts[5], { from: accounts[5] });
+    assert.equal(investorInfo.total_referral_bonus, 0, "Referral amount is not correct");
   });
 
 });

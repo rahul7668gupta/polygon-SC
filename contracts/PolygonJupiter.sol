@@ -68,7 +68,7 @@ contract PolygonJupiter {
         return (invested, withdrawn, referral_bonus);
     }
 
-    function userInfo(address _addr)
+    function investorInfo(address _addr)
         external
         view
         returns (
