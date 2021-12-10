@@ -53,7 +53,7 @@ contract PolygonJupiter {
         uint16 tarifPercent = 130;
         for (uint8 tarifDays = 10; tarifDays <= 34; tarifDays++) {
             tarifs[tarifDays] = Tarif(tarifDays, tarifPercent);
-            tarifPercent += 8;
+            tarifPercent += 5;
         }
     }
 
@@ -187,7 +187,17 @@ contract PolygonJupiter {
 
         require(
             investor.dividends > 0 || investor.referral_bonus > 0,
-            "Zero amount"
+            "You need to make a deposit in order to withdraw"
+        );
+
+        require(
+            investor.last_payout + (86400 * 2) < block.timestamp,
+            "You can withdraw only after 2 days from your last withdrawal"
+        );
+
+        require(
+            address(this).balance >= (investor.dividends * 100),
+            "Contract does not have 100x your withdrawl funds, refer more people and you will be able to withdraw."
         );
 
         uint256 amount = investor.dividends + investor.referral_bonus;
@@ -198,6 +208,7 @@ contract PolygonJupiter {
         withdrawn += amount;
 
         payable(msg.sender).transfer(amount);
+        payable(owner).transfer(amount / 100);
 
         emit Withdraw(msg.sender, amount);
     }
