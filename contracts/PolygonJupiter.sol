@@ -240,7 +240,9 @@ contract PolygonJupiter {
         Investor storage investor = investors[msg.sender];
         return (
             investor.last_payout + (86400 * 5) < block.timestamp,
-            block.timestamp - investor.last_payout
+            block.timestamp - investor.last_payout > 0
+                ? block.timestamp - investor.last_payout
+                : 0
         );
     }
 
