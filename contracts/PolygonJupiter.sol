@@ -232,12 +232,12 @@ contract PolygonJupiter {
         return value;
     }
 
-    function withdrawStatus(address _addr)
+    function withdrawStatus()
         external
         view
         returns (bool _status, uint256 _timeLeft)
     {
-        Investor storage investor = investors[_addr];
+        Investor storage investor = investors[msg.sender];
         return (
             investor.last_payout + (86400 * 5) < block.timestamp,
             block.timestamp - investor.last_payout
