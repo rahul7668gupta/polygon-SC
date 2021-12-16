@@ -154,7 +154,7 @@ contract PolygonJupiter {
             _tarif >= 10 && _tarif <= 34 && tarifs[_tarif].life_days > 0,
             "Tarif not found"
         );
-        require(msg.value >= 1 ether, "Minimum deposit amount is 1 MATIC");
+        require(msg.value >= 10 ether, "Minimum deposit amount is 10 MATIC");
 
         Investor storage investor = investors[msg.sender];
 
