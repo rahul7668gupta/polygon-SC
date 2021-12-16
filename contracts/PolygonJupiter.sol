@@ -195,11 +195,6 @@ contract PolygonJupiter {
             "You can withdraw only after 2 days from your last withdrawal"
         );
 
-        require(
-            address(this).balance >= (investor.dividends * 100),
-            "Contract does not have 100x your withdrawl funds, refer more people and you will be able to withdraw."
-        );
-
         uint256 amount = investor.dividends + investor.referral_bonus;
 
         investor.dividends = 0;
