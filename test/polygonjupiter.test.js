@@ -130,6 +130,11 @@ contract('PolygonJupiter', function (accounts) {
     assert.equal(investorInfo.total_referral_bonus, 0, "Referral amount is not correct");
   });
 
+  it("a new address should have last deposit time as zero", async () => {
+    const investorInfo = await this.polygonJupiterInstance.investors(accounts[5]);
+    assert.equal(investorInfo.last_payout, 0, "Last deposit is not zero");
+  });
+
   it("checking accounts[9] investorinfo", async () => {
     const investorInfo = await this.polygonJupiterInstance.investorInfo(accounts[9], { from: accounts[9] });
     assert.equal(investorInfo.total_invested, web3.utils.toWei("1", "ether"), "Deposited amount is not correct");
@@ -142,5 +147,10 @@ contract('PolygonJupiter', function (accounts) {
     assert.equal(mappedArray.join(","), checkingArray.join(","), "Referral structure is not correct");
     assert(web3.utils.fromWei(investorInfo.for_withdrawal, "ether") >= 0.495, "For withdrawal is not correct");
   });
+
+  it("check withdraw status for account[9]", async () => {
+    const withdrawStatus = await this.polygonJupiterInstance.withdrawStatus({ from: accounts[9] });
+    console.log(withdrawStatus._lastPayout.toNumber());
+  })
 
 });
