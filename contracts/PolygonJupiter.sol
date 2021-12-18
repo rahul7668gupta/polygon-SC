@@ -257,7 +257,10 @@ contract PolygonJupiter {
     {
         Investor storage investor = investors[msg.sender];
 
-        require(_index < investor.deposits.length, "Index out of range");
+        require(
+            _index < investor.deposits.length,
+            "Index out of range of your deposits"
+        );
 
         return (
             investor.deposits[_index].tarif,
