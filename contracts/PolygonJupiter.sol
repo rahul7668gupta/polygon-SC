@@ -34,6 +34,7 @@ contract PolygonJupiter {
 
     uint8 constant BONUS_LEVELS_COUNT = 5;
     uint16 constant PERCENT_DIVIDER = 1000;
+    uint8 constant WITHDRAW_PERIOD_DAYS = 10;
     uint8[BONUS_LEVELS_COUNT] public ref_bonuses = [90, 45, 30, 15, 7];
 
     mapping(uint8 => Tarif) public tarifs;
@@ -158,7 +159,10 @@ contract PolygonJupiter {
 
         Investor storage investor = investors[msg.sender];
 
-        require(investor.deposits.length < 100, "Max 100 deposits per address");
+        require(
+            investor.deposits.length < 100,
+            "Max 100 deposits per address are allowed"
+        );
 
         _setReferral(msg.sender, _referral, msg.value);
 
@@ -191,8 +195,9 @@ contract PolygonJupiter {
         );
 
         require(
-            investor.last_payout + (86400 * 5) < block.timestamp,
-            "You can withdraw only after 5 days from your last withdrawal"
+            investor.last_payout + (86400 * WITHDRAW_PERIOD_DAYS) <
+                block.timestamp,
+            "You can withdraw only after 10 days from your last withdrawal"
         );
 
         uint256 amount = investor.dividends + investor.referral_bonus;
@@ -239,9 +244,11 @@ contract PolygonJupiter {
     {
         Investor storage investor = investors[msg.sender];
         return (
-            investor.last_payout + (86400 * 5) < block.timestamp,
-            investor.last_payout + (86400 * 5) < block.timestamp
-                ? investor.last_payout + (86400 * 5)
+            investor.last_payout + (86400 * WITHDRAW_PERIOD_DAYS) <
+                block.timestamp,
+            investor.last_payout + (86400 * WITHDRAW_PERIOD_DAYS) <
+                block.timestamp
+                ? investor.last_payout + (86400 * WITHDRAW_PERIOD_DAYS)
                 : 0
         );
     }
