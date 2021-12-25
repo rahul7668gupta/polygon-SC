@@ -187,18 +187,18 @@ contract PolygonJupiter {
     function withdraw() external {
         Investor storage investor = investors[msg.sender];
 
-        _payout(msg.sender);
+        require(
+            investor.last_payout + (86400 * WITHDRAW_PERIOD_DAYS) <
+                block.timestamp,
+            "You can withdraw only after 10 days from your last withdrawal"
+        );
 
         require(
             investor.dividends > 0 || investor.referral_bonus > 0,
             "You need to make a deposit in order to withdraw"
         );
 
-        require(
-            investor.last_payout + (86400 * WITHDRAW_PERIOD_DAYS) <
-                block.timestamp,
-            "You can withdraw only after 10 days from your last withdrawal"
-        );
+        _payout(msg.sender);
 
         uint256 amount = investor.dividends + investor.referral_bonus;
 
@@ -240,7 +240,7 @@ contract PolygonJupiter {
     function withdrawStatus()
         external
         view
-        returns (bool _status, uint256 _lastPayout)
+        returns (bool _status, uint256 _nextPayout)
     {
         Investor storage investor = investors[msg.sender];
         return (
