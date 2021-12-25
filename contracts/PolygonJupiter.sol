@@ -155,7 +155,7 @@ contract PolygonJupiter {
             _tarif >= 10 && _tarif <= 34 && tarifs[_tarif].life_days > 0,
             "Tarif not found"
         );
-        require(msg.value >= 10 ether, "Minimum deposit amount is 10 MATIC");
+        require(msg.value >= 1 ether, "Minimum deposit amount is 10 MATIC");
 
         Investor storage investor = investors[msg.sender];
 
@@ -192,13 +192,12 @@ contract PolygonJupiter {
                 block.timestamp,
             "You can withdraw only after 10 days from your last withdrawal"
         );
+        _payout(msg.sender);
 
         require(
             investor.dividends > 0 || investor.referral_bonus > 0,
             "You need to make a deposit in order to withdraw"
         );
-
-        _payout(msg.sender);
 
         uint256 amount = investor.dividends + investor.referral_bonus;
 
