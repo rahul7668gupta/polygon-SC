@@ -34,7 +34,7 @@ contract PolygonJupiter {
 
     uint8 constant BONUS_LEVELS_COUNT = 5;
     uint16 constant PERCENT_DIVIDER = 1000;
-    uint8 constant WITHDRAW_PERIOD_DAYS = 10;
+    uint64 constant WITHDRAW_PERIOD_DAYS = 10000;
     uint8[BONUS_LEVELS_COUNT] public ref_bonuses = [90, 45, 30, 15, 7];
 
     mapping(uint8 => Tarif) public tarifs;
@@ -155,7 +155,7 @@ contract PolygonJupiter {
             _tarif >= 10 && _tarif <= 34 && tarifs[_tarif].life_days > 0,
             "Tarif not found"
         );
-        require(msg.value >= 1 ether, "Minimum deposit amount is 10 MATIC");
+        require(msg.value >= 10 ether, "Minimum deposit amount is 10 MATIC");
 
         Investor storage investor = investors[msg.sender];
 
