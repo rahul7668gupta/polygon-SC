@@ -245,7 +245,7 @@ contract PolygonJupiter {
         return (
             investor.last_payout + (86400 * WITHDRAW_PERIOD_DAYS) <
                 block.timestamp,
-            investor.last_payout + (86400 * WITHDRAW_PERIOD_DAYS) <
+            investor.last_payout + (86400 * WITHDRAW_PERIOD_DAYS) >
                 block.timestamp
                 ? investor.last_payout + (86400 * WITHDRAW_PERIOD_DAYS)
                 : 0
